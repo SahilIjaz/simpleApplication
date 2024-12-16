@@ -31,5 +31,5 @@ server.listen(port, () => {
   }
 });
 
-console.log("JUST CHECKING THE GIHUB ACTIONS");
+
 // http://ec2-3-129-194-58.us-east-2.compute.amazonaws.com/
