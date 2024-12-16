@@ -1,0 +1,31 @@
+{
+  "name": "chatapplicationapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "SET NODE_ENV=development& nodemon server.js",
+    "start_prod": "SET NODE_ENV=production& nodemon server.js"
+  },
+  "author": "Sahil Ijaz",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "cron": "^3.3.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.0.1",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "path": "^0.12.7",
+    "socket.io": "^4.8.1",
+    "validator": "^13.12.0"
+  }
+}
