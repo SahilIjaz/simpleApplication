@@ -115,7 +115,7 @@ exports.profileUpdate = catchAsync(async (req, res, next) => {
         new appError("Profile was not updated for requested user.", 400)
       );
     }
-
+    console.log("USER");
     user.isProfileCompleted = true;
     user.isActive = true;
     await user.save();

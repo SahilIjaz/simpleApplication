@@ -5,24 +5,6 @@ const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
 const Notification = require("../models/notificationModel");
 
-// const { sendNotification } = require("./Notifications");
-
-// const authentication = (cb) => async (userData) => {
-//     const user = await User.findOne({ _id: userData._id });
-
-//     if (!user) {
-//       // Emit an error message and disconnect the socket if user is not authenticated
-//       socket.emit("unauthenticated", {
-//         message: "Unauthenticated",
-//         success: false,
-//         data: {},
-//       });
-//       return socket.disconnect();
-//     }
-//     // Invoke the callback with the authenticated user data
-//     await cb({ user: JSON.parse(JSON.stringify(user)), ...userData });
-//   };
-
 let activeUsers = [];
 
 const getOnlineUsers = () => {
@@ -49,20 +31,9 @@ io.on("connection", (socket) => {
     }
 
     console.log(activeUsers);
-    // console.log("CONSOLE LOG INSIDE SETUP:", userData._id);
-
-    // const fetchNotificationAndMessages = async() =>{
-    //   try{
-    //     const Notification = await Notification.find({
-
-    //     })
-    //   }catch(err){
-
-    //   }
-    // }
 
     socket.join(userData._id);
-    //socket.emit("connected");
+
     getOnlineUsers();
   });
 
@@ -87,7 +58,7 @@ io.on("connection", (socket) => {
         isSeen: false,
       });
       chats[i].newMessages = messages.length;
-      //const activeUsersIds  = activeUsers.map((user)=>user.userId)
+
       chats[i].users.map((user) => {
         activeUsers.map((activeUser) => {
           if (activeUser.userId === user._id.toString()) {
@@ -131,13 +102,6 @@ io.on("connection", (socket) => {
       chat = await Chat.create({
         users: [userData._id, receiver._id],
       });
-      // return io.to(userData._id).emit("messages", {
-      //   status: "fail",
-      //   message:
-      //     "Failed to retrieve messages. Chat with this user doesnt exist.",
-      //   receiver,
-      //   messages: [],
-      // });
     }
     const updatedMessages = await Message.updateMany(
       { sender: receiver._id, receiver: userData._id },
@@ -184,8 +148,6 @@ io.on("connection", (socket) => {
         messages: [...messages],
       });
     }
-
-    //console.log(`User ${userData.firstName} connected to room:` + room);
   });
 
   socket.on("typing", (room) => {
@@ -220,11 +182,7 @@ io.on("connection", (socket) => {
           lastMessage: message,
           messageTime: currentUnixTime,
         });
-        console.log("11111111111111111111111111111111111111111");
-        console.log("11111111111111111111111111111111111111111");
-        console.log("CHAT IS : ", chat);
-        console.log("11111111111111111111111111111111111111111");
-        console.log("11111111111111111111111111111111111111111");
+
         const newChatId = chat._id.toString();
         socket.join(newChatId);
       } else {
@@ -249,15 +207,6 @@ io.on("connection", (socket) => {
         isSeen: joinedPeopleCount > 1 ? true : false,
       });
 
-      console.log("DB MESSAGE IS:", dbMessage);
-
-      // const currentMessage = await Message.findById(dbMessage?._id)
-      // console.log("CURRENT MESSAGE IS:",currentMessage)
-      // const updatedMessages = await Message.updateMany(
-      //   { sender: receiver._id, receiver: userData._id },
-      //   { seen: true }
-      // );
-
       const messages = await Message.find({
         $and: [
           {
@@ -268,8 +217,6 @@ io.on("connection", (socket) => {
           },
         ],
       }).sort({ createdAt: -1 });
-
-      console.log(messages);
 
       io.to(userData._id).emit("message-sent", {
         status: "success",
@@ -329,35 +276,12 @@ io.on("connection", (socket) => {
         message: "Inboxes fetched successfully",
         inboxes: [...chats],
       });
-
-      //const chat = newMessageReceived.chat;
-
-      // console.log("CHAT in NEW-MESSAGE:" + chat);
-      // socket
-      //   .in(newMessageReceived?.receiver?._id)
-      //   .emit("message-received", newMessageReceived);
-
-      // const receiver = await User.findById(newMessageReceived?.receiver?._id);
-
-      // if (!receiver.fcmToken) {
-      //   return console.log("FCM token not found!!!");
-      // }
-
-      // await sendNotification({
-      //   fcmToken: receiver.fcmToken,
-      //   title: "New Message Received",
-      //   body: `${userData.firstName} sent you a message`,
-      //   notificationData: JSON.stringify(newMessageReceived),
-      // });
     } catch (err) {
       console.log(err);
     }
   });
 
   socket.on("disconnected", (userData) => {
-    //console.log(socket.id)
-
-    //activeUsers = activeUsers.filter((user) => user.socketId !== socket.id);
     console.log(userData._id.toString());
     activeUsers = activeUsers.filter(
       (user) => user.userId !== userData._id.toString()

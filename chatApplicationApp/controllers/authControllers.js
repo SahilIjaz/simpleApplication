@@ -186,7 +186,6 @@ exports.resendOtp = catchAsync(async (req, res, next) => {
   }
 
   const otp = await otpGenerator(user);
-  console.log("THE OTP OF USER IS : ", otp);
 
   user.otp = otp;
   user.otpExpiration = Date.now() + 1 * 60 * 1000;
@@ -203,11 +202,10 @@ exports.resendOtp = catchAsync(async (req, res, next) => {
 });
 
 exports.logIn = catchAsync(async (req, res, next) => {
-  console.log("IN THE LOGIN CONTROLLER");
   const { email, password, deviceId, fcmToken } = req.body;
-  console.log("BEFORE FINDING OUT THE USER");
+
   const user = await User.findOne({ email }).select("+password");
-  console.log("USER FOUND SUCCESSFULLY.");
+
   if (!user) {
     return next(new appError("Requested user was not found.", 404));
   }
@@ -237,7 +235,6 @@ exports.logIn = catchAsync(async (req, res, next) => {
     if (!newToken) {
       return next(new appError("New token was not created.", 400));
     }
-    console.log("NEWLY GENERATED TOKEN IS : ", newToken);
   }
 
   token.fcmToken = fcmToken;
@@ -279,9 +276,9 @@ exports.logOut = catchAsync(async (req, res, next) => {
 
 exports.deleteAccount = catchAsync(async (req, res, next) => {
   const { password } = req.body;
-  console.log("BEFORE PASSWORD CHECK");
+
   const user = await User.findById(req.user._id).select("+password");
-  console.log("AFTER PASSWORD CHECK");
+
   if (!user) {
     return next(new appError("Requested user not found.", 404));
   }
@@ -289,18 +286,16 @@ exports.deleteAccount = catchAsync(async (req, res, next) => {
   if (!passwordCorrect) {
     return next(new appError("Your password is in correct", 404));
   }
-  console.log("before otp expiration");
+
   if (user.otpExpiration > Date.now()) {
     return next(new appError("Wait for 60 seconds.", 400));
   }
-  console.log("before otp generatuion");
+
   const otp = await otpGenerator(user);
   user.otp = otp;
   user.otpExpiration = Date.now() + 1 * 60 * 1000;
   await user.save();
-  console.log("before sending the respnse");
-  console.log("THE USER IS : ", user);
-  console.log("THE USER IS : ", user.otp);
+
   res.status(200).json({
     message: "OTP sent at your email address for deleting account.",
     status: 200,
@@ -313,7 +308,6 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   if (req.user.otpExpiration < Date.now()) {
     return next(new appError("OTP expired, request for new one.", 400));
   }
-  console.log("THE OTP OD+F THE USER IS : ", req.user.otp);
 
   if (req.user.otp !== otp) {
     return next(new appError("OTP is not valid.", 400));
@@ -449,7 +443,7 @@ exports.changePassword = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
-  console.log(req.headers.authorization);
+
   if (!req.headers.authorization.startsWith("Bearer")) {
     token = req.headers.authorization;
     if (!token) {
@@ -461,10 +455,8 @@ exports.protect = catchAsync(async (req, res, next) => {
       process.env.JWT_SECRET
     );
 
-    console.log("DEcode TOKEN IS : ", decoded);
-    console.log("DEcode TOKEN IS : ", decoded.id);
     const freshUser = await User.findById(decoded.id);
-    console.log("FRESH TOKEN IS : ", freshUser);
+
     if (!freshUser) {
       return next(new appError("This user no longer exists.", 401));
     }
@@ -485,9 +477,8 @@ exports.protect = catchAsync(async (req, res, next) => {
         token,
         process.env.JWT_SECRET
       );
-      console.log("DEcode TOKEN IS : ", decoded.id);
+
       const freshUser = await User.findById(decoded.id);
-      console.log("FRESH TOKEN IS : ", freshUser);
 
       if (!freshUser) {
         return next(new appError("This user no longer exists.", 401));

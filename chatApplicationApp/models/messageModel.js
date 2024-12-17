@@ -22,7 +22,6 @@ const messageSchema = new mongoose.Schema(
     },
     messageType: {
       type: String,
-      // default: String,
     },
     chat: {
       type: mongoose.Schema.Types.ObjectId,
@@ -46,7 +45,6 @@ messageSchema.pre(/^find/, function (next) {
   });
   this.populate({
     path: "chat",
-    // ref: "Chat",
   });
   next();
 });

@@ -11,9 +11,6 @@ const chatSchema = new mongoose.Schema(
     ],
     lastMessage: {
       type: String,
-
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "Message",
     },
     lastMessageSender: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,9 +37,7 @@ chatSchema.pre(/^find/, function (next) {
   this.populate({
     path: "lastMessageSender",
   });
-  // this.populate({
-  //   path: "lastMessage",
-  // });
+
   next();
 });
 

@@ -14,10 +14,10 @@ const DB = process.env.DB;
 
 mongoose
   .connect(DB)
-  .then((con) => console.log("Connetion established successfully right now !"))
-  .catch((con) => console.log("Error occured during connection !", con));
+  .then((con) => console.log("Connection established successfully right now !"))
+  .catch((con) => console.log("Error occurred during connection !", con));
 
-console.log("Hy! Live dployed to run after 1 minute.");
+console.log("Hy! Live deployed to run after 1 minute.");
 socketapi.io.attach(server, {
   cors: {
     origin: "*",
@@ -30,7 +30,3 @@ server.listen(port, () => {
     console.log(`Server is running on port ${port} in production mode.`);
   }
 });
-
-
-
-// http://ec2-3-129-194-58.us-east-2.compute.amazonaws.com/

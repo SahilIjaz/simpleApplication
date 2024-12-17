@@ -8,7 +8,7 @@ class APIFeatures {
     const queryObj = { ...this.queryStr };
     const queryEle = ["page", "sort", "limit", "fields"];
     queryEle.forEach((el) => delete queryObj[el]);
-    // advance filtering
+
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(
       /\b(gte|gt|lte|lt|eq|ne)\b/g,

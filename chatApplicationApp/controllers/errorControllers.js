@@ -26,8 +26,6 @@ const validationError = (err) => {
   const errorMsgs = errors.join(". ");
   const msg = `Invalid input data: ${errorMsgs}`;
 
-  // console.log(errors);
-  // console.log(msg);
   return new appError(msg, 400);
 };
 

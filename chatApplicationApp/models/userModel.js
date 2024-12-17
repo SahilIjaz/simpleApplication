@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "password is required."],
       select: false,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     confirmPassword: {
       type: String,
       validate: {
@@ -71,7 +75,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-//password encryption
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
@@ -83,7 +86,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-//:::::::::::::::::pre hooks
 userSchema.pre(/^find/, function (next) {
   this.find({
     isDeleted: false,
@@ -91,7 +93,6 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-//password checking
 userSchema.methods.checkPassword = async function (
   candidatePassword,
   userPassword
